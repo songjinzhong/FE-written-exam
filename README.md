@@ -35,7 +35,7 @@ btn.addEventListener("touchend", function(){
 
 ### 2
 
->请封装一个名叫Counter的计数器Class，只有两个公有成员：完成计数动作，输出计数总数
+>请封装一个名叫 Counter 的计数器 Class，只有两个公有成员：完成计数动作，输出计数总数
 
 如果让我来实现的话，有两种实现方式吧，一种是 es5，另一种是 es6，如果有时间和能力，都写吧！！
 
@@ -85,4 +85,103 @@ counter.print(); //1
 
 >谈谈你对前端工程化/集成开发环境的理解和实践，借助前端工程化你还可以优化前端开发过程中的哪些环节？
 
-这个问题如果让我来回答，我
+这又是个啥问题呀，我不懂什么叫前端工程化呀，如果非要回答，我会把前几年前端行业比较火的，和最近今年前端比较火的框架、工具大致说一下，不知道这是不是答案。
+
+[前端工程——基础篇](https://github.com/fouber/blog/issues/10)。
+
+好吧，下一题！
+
+### 4
+
+>使用原生 JavaScript 给下面列表中的结点绑定点击事件，点击时创建一个 Object 对象，兼容 IE 和标准浏览器。
+
+HTML:
+
+```html
+<ul id = “nav”>
+  <li><a href=”http://ju.taobao.com/tg/brand.htm”>品牌团</a></li>
+  <li><a href=”http://ju.taobao.com/tg/point_list.htm”>整点聚</a></li>
+  <li><a href=”http://ju.taobao.com/jusp/jiazhuang/tp.htm”>聚家装</a></li>
+  <li><a href=”http://ju.taobao.com/jusp/liangfan/tp.htm”>量贩团</a></li>
+</ul>
+Object:
+{
+“index” : 1, // 序号
+“name” : “品牌团”,
+“link” :“http://ju.taobao.com/tg/brand.htm”
+}
+```
+
+当时看到这个题目的时候，我首先想到的是用事件委托来做，尤其当子元素的数量很大的时候，免去很多监听。但是又觉得不妥，因为输出来看的话，需要获得 index、name 和 likn，如果用委托，这是不好获取的，索性贴了两种代码，大家取舍。**注意兼容性！**
+
+```html
+// 委托
+<script type="text/javascript">
+(function(){
+  function addEvent(ele, event, listener){
+    if(ele.addEventListener){
+      ele.addEventListener(event, listener, false);
+    }else if(ele.attachEvent){
+      ele.attachEvent('on' + event, listener);
+    }else{
+      ele['on' + event] = listener;
+    }
+  }
+
+  var nav = document.getElementById('on');
+  addEvent(nav, 'click', callbacks);
+
+  function callbacks(e){
+    e = e || window.event;
+    var target = e.target || e.srcElement;
+    var list_a = nav.getElementsByTagName('a'); // a 集合
+
+    // 把 target 指向 a 标签
+    if(target.nodeName.toLowerCase() == 'li'){
+      target = target.children[0];
+    }
+
+    var ret = {};
+    ret.index = [].indexOf.call(list_a, target) + 1;
+    ret.name = target.textContent.replace(/^\s+|\s+$/g, '');
+    ret.link = target.getAttribute('href');
+    console.log(JSON.stringify(ret, null, 4));
+
+    // 阻止默认事件
+    e.preventDefault ? e.preventDefault() : e.returnValue = false;
+  }
+})()
+</script>
+```
+
+可以看到事件委托的，会发现找到当前点击的那个 li 很麻烦，不过当 li 很多的时候，对于整个页面是有很大优化的。
+
+```html
+<script type="text/javascript">
+(function(){
+  // 闭包
+  addEvent // 同上
+  var lis = document.getElementById('nav').getElementsByTagName('li');
+  for(var i = 0; i < lis.length; i++){
+    (function(x){
+      addEvent(lis[x], 'click', function(e){
+        e = e || window.event;
+        var ret = {};
+
+        ret.index = x + 1;
+        ret.name = lis[x].children[0].textContent.replace(/^\s+|\s+$/g, '');
+        ret.link = lis[x].children[0].getAttribute('href');
+
+        console.log(ret);
+
+        e.preventDefault ? e.preventDefault() : e.returnValue = false;
+      })
+    })(i)
+  }
+})()
+</script>
+```
+
+相对来说，闭包要简单一些，但是必须要对闭包有很好的理解。
+
+**我觉得这个题目出的还是相对较好的**。
