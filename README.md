@@ -185,3 +185,66 @@ Object:
 相对来说，闭包要简单一些，但是必须要对闭包有很好的理解。
 
 **我觉得这个题目出的还是相对较好的**。
+
+### 5
+
+>图片分析，请编写JS代码获取下图中“红框”的位置（“红框”的颜色为“FF0000”）
+
+这个题目貌似 canvas 来实现，了解过，但没深入研究，这里一篇解答挺不错的。[阿里2014实习笔试题及答案整理](http://www.qdfuns.com/notes/16653/e71b13853934e9f28b3286bb70ca1e3a)。
+
+### 6
+
+>请实现下面浮层demo：
+>这是一个盖在页面上的浮层，上下左右居中；
+>浮层展示时，页面不可滚动；
+>浏览器窗口缩小时，浮层跟着缩小，最小（320px）；
+>窗口放大，浮层跟着放大，最大（650px）；
+>尽可能用HTML5/CSS3方式写，可以不支持IE。
+
+好吧，这题要让写 css 和 html，但我猜想，应该是让写一个 button，点击 button，显示悬浮窗。（这个题目是今年 2017 阿里校招暑假实习的在线编程题，用于简历评估的，让 30 分钟搞定）
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+*{
+  padding: 0;
+  margin: 0;
+}
+body{
+  width: 100%;
+  height: 100%;
+}
+#layer{ position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 100; background: rgba(0,0,0,0.3); display: none; }
+#layer .box{width: 60%; height: 400px; position: absolute; left: 0; right: 0; top: 0; bottom: 0; max-width: 650px; min-width: 320px; margin: auto; background: white}
+#layer.show{display: block;}
+</style>
+</head>
+<body>
+  <button id="open">open</button>
+  <div id="layer">
+    <div class="box">
+      <h2>悬浮窗</h2>
+      <p>testtesttesttesttesttesttesttesttest</p>
+      <button id="close">close</button>
+    </div>
+  </div>
+  <script type="text/javascript">
+var open = document.getElementById('open'),
+  close = document.getElementById('close'),
+  layer = document.getElementById('layer');
+open.addEventListener('click', function(){
+  layer.className = 'show';
+}, false)
+close.addEventListener('click', function(){
+  layer.className = '';
+}, false)
+  </script>
+</body>
+</html>
+```
+
+可能原作者的配图有问题，这题还是按照自己的理解来写吧，随便写了，没有经过测试。。(打开浏览器测试了下，也没啥大问题)
+
