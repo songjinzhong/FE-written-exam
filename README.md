@@ -195,10 +195,15 @@ Object:
 ### 6
 
 >请实现下面浮层demo：
+
 >这是一个盖在页面上的浮层，上下左右居中；
+
 >浮层展示时，页面不可滚动；
+
 >浏览器窗口缩小时，浮层跟着缩小，最小（320px）；
+
 >窗口放大，浮层跟着放大，最大（650px）；
+
 >尽可能用HTML5/CSS3方式写，可以不支持IE。
 
 好吧，这题要让写 css 和 html，但我猜想，应该是让写一个 button，点击 button，显示悬浮窗。（这个题目是今年 2017 阿里校招暑假实习的在线编程题，用于简历评估的，让 30 分钟搞定）
@@ -256,7 +261,7 @@ close.addEventListener('click', function(){
 
 ```html
 <script type="text/javascript">
-(function(){
+var sortArray = (function(){
   function sortArray(arr){
     if(!Array.isArray(arr)){
       return false;
@@ -286,6 +291,165 @@ close.addEventListener('click', function(){
       console.log(v.value);
     })
   }
+  return sortArray;
 })()
 </script>
 ```
+
+### 8
+
+>HTTP协议是无状态的，为了保持用户会话状态使用了什么技术方案弥补；该技术方案在用户禁用了cookie之后，还有什么方式实现（可不考虑安全性）
+
+关于 HTTP 协议的无状态，指的是每次客户端向服务器请求，都是独立的，互不干扰的，如果请求资源是同步的，那麻烦就大了。所以，有时候会把一些状态信息放到 cookie 中，这样服务器就知道是谁发起了本次请求。
+
+除了 cookie，session 也可以实现，两者实现机理是一样的，保存位置不同。貌似还有 hidden 表单和 QueryString 来实现。网上找了[一篇文章](https://my.oschina.net/sunmin/blog/535892)看的，不知道对不对。
+
+### 9
+
+>现有一个字符串richText，是一段富文本，需要显示在页面上。有个要求，需要给其中只包含一个img元素的p标签增加一个叫pic的class。请编写代码实现。可以使用jQuery或KISSY。
+
+还是看不懂这个题目是什么意思，大概是让实现插入一段富文本，但是富文本是一种什么样的格式呢，和 markdown 一样？到底什么是富文本，第二个问题和这个有联系？
+
+```html
+<div class="container"></div>
+<button id="btn">Insert</button>
+<p><img src=""></p>
+
+<script type="text/javascript">
+// jquery
+(function(){
+  // richText
+  var richText = 'test';
+  $('#btn').on('click', function(){
+    $('.container').html(richText);
+    $('p').filter(function(){
+      return $('img', this).length == 1;
+    }).addClass('pic');
+  })
+})()
+</script>
+```
+
+不知道这个题目什么意思。。
+
+### 10
+
+>题目：实现一个简单的返回顶部组件的功能。要求：
+
+>当页面向下滚动距顶部一定距离（如100px）时出现，向上回滚距顶部低于同样距离时隐藏，点击返回顶部组件时页面滚动到顶部；
+
+>请写出HTML、CSS和JavaScript；
+
+>要求支持IE6以上、Chrome、Firefox
+
+看到支持 IE6，就知道这是一个变态题目，鬼知道 IE6 不知道哪些函数。。IE 去死吧。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+*{padding: 0; margin: 0;}
+#top{padding: 10px; position: fixed; bottom: 10px; right: 10px; background: black; color:white; cursor: pointer; transition: 0.5s;}
+.none{transform: translateY(100px);}
+</style>
+</head>
+<body>
+  <div style="width: 100%; height: 3000px"></div>
+  <div id="top" class="none">
+    <a>Top</a>
+  </div>
+  <script type="text/javascript">
+(function(){
+  function addEvent(ele, event, listener){
+    if(ele.addEventListener){
+      ele.addEventListener(event, listener, false);
+    }else if(ele.attachEvent){
+      ele.attachEvent('on' + event, listener);
+    }else{
+      ele['on' + event] = listener;
+    }
+  }
+
+  var top = document.getElementById('top');
+  addEvent(top, 'click', function(){
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
+    top.setAttribute('class', 'none');
+  })
+
+  function handleTop(){
+    var st = document.body.scrollTop || document.documentElement.scrollTop;
+    var className = st > 300 ? '' : 'none';
+    top.setAttribute('class', className);
+  }
+
+  //判断是非为 IE 浏览器
+  if(window.attachEvent){
+    addEvent(window, 'scroll', handleTop);
+  }else{
+    addEvent(document, 'scroll', handleTop);
+  }
+})()
+  </script>
+</body>
+</html>
+```
+
+IE6 支持 [attachEvent](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTop) 和 [getAttribute](https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute)。
+
+如果对于 IE 浏览器，需要对 window 监听，对 document 监听是没用的。当然，也可以写成只对 window 监听，貌似这样更好一些，就不用判断了。
+
+除此之外，如果不用 scroll，还有一个比较好的实现办法，就是用 id 来实现：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+*{padding: 0; margin: 0;}
+#top{padding: 10px; position: fixed; bottom: 10px; right: 10px; background: black; color:white; cursor: pointer; transition: 0.5s;}
+#top a{color: white;}
+.none{transform: translateY(100px);}
+</style>
+</head>
+<body>
+  <div id="header" style="height: 0;"></div>
+  <div style="width: 100%; height: 3000px"></div>
+  <div id="top" class="none">
+    <a href="#header">Top</a>
+  </div>
+  <script type="text/javascript">
+(function(){
+  function addEvent(ele, event, listener){
+    if(ele.addEventListener){
+      ele.addEventListener(event, listener, false);
+    }else if(ele.attachEvent){
+      ele.attachEvent('on' + event, listener);
+    }else{
+      ele['on' + event] = listener;
+    }
+  }
+
+  var top = document.getElementById('top');
+
+  function handleTop(){
+    var st = document.body.scrollTop || document.documentElement.scrollTop;
+    var className = st > 300 ? '' : 'none';
+    top.setAttribute('class', className);
+  }
+
+  //判断是非为 IE 浏览器
+  if(window.attachEvent){
+    addEvent(window, 'scroll', handleTop);
+  }else{
+    addEvent(document, 'scroll', handleTop);
+  }
+})()
+  </script>
+</body>
+</html>
+```
+
+只需要考虑 top 按钮的显示和隐藏就 ok 了。
