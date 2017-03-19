@@ -248,3 +248,44 @@ close.addEventListener('click', function(){
 
 可能原作者的配图有问题，这题还是按照自己的理解来写吧，随便写了，没有经过测试。。(打开浏览器测试了下，也没啥大问题)
 
+### 7
+
+>有一个int型数组，里面有若干数字。要求统计出一共有多少种不同的数字？每种数字出现的频率从少到多排列，频率相同则从小到大排列。
+
+我的解决思路：
+
+```html
+<script type="text/javascript">
+(function(){
+  function sortArray(arr){
+    if(!Array.isArray(arr)){
+      return false;
+    }
+
+    var hash = {},
+      ret = [];
+    arr.forEach(function(v){
+      hash[v] ? hash[v].num ++ : hash[v] = {num : 1};
+    })
+
+    for(var i in hash){
+      ret.push({
+        value: i,
+        num: hash[i].num
+      })
+    }
+
+    ret.sort(function(a, b){
+      return a.num == b.num ?
+        parseInt(a.value) - parseInt(b.value) :
+        a.num - b.num;
+    })
+
+    console.log('共有 ' + ret.length + ' 种不同数字');
+    ret.forEach(function(v){
+      console.log(v.value);
+    })
+  }
+})()
+</script>
+```
